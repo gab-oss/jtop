@@ -20,9 +20,4 @@ public class ProcessesController {
     public List<Process> getProcesses() {
         return processService.getProcesses();
     }
-
-    @GetMapping("/current")
-    public Process getCurrentProcess() {
-        return processService.getCurrentProcess();
-    }
 }
