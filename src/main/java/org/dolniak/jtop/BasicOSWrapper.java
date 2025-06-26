@@ -1,6 +1,5 @@
 package org.dolniak.jtop;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
@@ -16,10 +15,12 @@ public class BasicOSWrapper implements OSWrapper {
         this.os = os;
     }
 
+    @Override
     public List<OSProcess> getProcesses() {
         return os.getProcesses();
     }
 
+    @Override
     public OSProcess getProcess(int pid) {
         return os.getProcess(pid);
     }
