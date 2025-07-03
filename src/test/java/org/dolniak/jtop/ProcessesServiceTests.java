@@ -13,16 +13,14 @@ import java.util.List;
 public class ProcessesServiceTests {
 
     @Autowired
+    MockSystemInfoProvider mockSystemInfoProvider;
+
+    @Autowired
     ProcessService processService;
-
-//    @Autowired
-//    MockSystemInfoProvider mockSystemInfoProvider;
-
 
     @Test
     void getProcesses_whenNoProcessRunning_shouldRespondWithEmptyList() { // a bit of an artificial case
         // arrange
-        processService.getProcesses();
 
         // act
         List<Process> processEntryList = processService.getProcesses();

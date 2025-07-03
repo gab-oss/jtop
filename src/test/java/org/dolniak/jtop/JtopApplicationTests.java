@@ -9,12 +9,8 @@ import oshi.software.os.OperatingSystem;
 @SpringBootTest
 class JtopApplicationTests {
 
-
-
 	@Test
 	void contextLoads() {
 	}
-
-
 
 }

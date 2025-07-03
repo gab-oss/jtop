@@ -8,4 +8,5 @@ public interface SystemInfoProvider {
 
     List<OSProcess> getProcesses();
     OSProcess getProcess(int pid);
+
 }

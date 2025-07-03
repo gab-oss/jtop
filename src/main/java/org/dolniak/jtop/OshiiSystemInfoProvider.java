@@ -1,5 +1,6 @@
 package org.dolniak.jtop;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
@@ -24,4 +25,5 @@ public class OshiiSystemInfoProvider implements SystemInfoProvider {
     public OSProcess getProcess(int pid) {
         return os.getProcess(pid);
     }
+
 }

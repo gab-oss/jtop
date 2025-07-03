@@ -28,4 +28,5 @@ public class MockSystemInfoProvider implements SystemInfoProvider {
     public void addProcess(OSProcess process) {
         processes.put(process.getProcessID(), process);
     }
+
 }
