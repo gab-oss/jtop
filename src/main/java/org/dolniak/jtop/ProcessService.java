@@ -15,8 +15,7 @@ public class ProcessService {
     }
 
     public List<Process> getProcesses() {
-        List<OSProcess> osProcesses = systemInfoProvider.getProcesses();
-        return osProcesses.stream().map(x -> new Process(x.getProcessID(), x.getName())).toList();
+        return systemInfoProvider.getProcesses();
     }
 
 }

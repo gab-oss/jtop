@@ -17,13 +17,18 @@ public class OshiiSystemInfoProvider implements SystemInfoProvider {
     }
 
     @Override
-    public List<OSProcess> getProcesses() {
-        return os.getProcesses();
+    public List<Process> getProcesses() {
+        List<OSProcess> osProcesses = os.getProcesses();
+        return osProcesses.stream().map(this::convertOsProcess).toList();
     }
 
     @Override
-    public OSProcess getProcess(int pid) {
-        return os.getProcess(pid);
+    public Process getProcess(int pid) {
+        return convertOsProcess(os.getProcess(pid));
+    }
+
+    private Process convertOsProcess(OSProcess osProcess) {
+        return new Process(osProcess.getProcessID(), osProcess.getName());
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -18,8 +19,9 @@ public class ProcessesControllerTests {
 
     @Test
     public void get_shouldReturnOk() throws Exception {
-        mockMvc.perform(get("/processes")).andExpect(status().isOk());
+        mockMvc.perform(get("/processes"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
     }
-
 
 }

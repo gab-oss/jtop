@@ -9,24 +9,24 @@ import java.util.Map;
 
 public class MockSystemInfoProvider implements SystemInfoProvider {
 
-    private final Map<Integer, OSProcess> processes;
+    private final Map<Integer, Process> processes;
 
     MockSystemInfoProvider() {
         this.processes = new HashMap<>();
     }
 
     @Override
-    public List<OSProcess> getProcesses() {
+    public List<Process> getProcesses() {
         return new ArrayList<>(processes.values());
     }
 
     @Override
-    public OSProcess getProcess(int pid) {
+    public Process getProcess(int pid) {
         return processes.get(pid);
     }
 
-    public void addProcess(OSProcess process) {
-        processes.put(process.getProcessID(), process);
+    public void addProcess(Process process) {
+        processes.put(process.pid(), process);
     }
 
 }

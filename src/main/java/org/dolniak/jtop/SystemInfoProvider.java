@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SystemInfoProvider {
 
-    List<OSProcess> getProcesses();
-    OSProcess getProcess(int pid);
+    List<Process> getProcesses();
+    Process getProcess(int pid);
 
 }

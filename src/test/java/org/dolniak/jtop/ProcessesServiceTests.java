@@ -23,9 +23,24 @@ public class ProcessesServiceTests {
         // arrange
 
         // act
-        List<Process> processEntryList = processService.getProcesses();
+        List<Process> processes = processService.getProcesses();
 
         // assert
-        Assertions.assertEquals(0, processEntryList.size());
+        Assertions.assertEquals(0, processes.size());
     }
+
+    @Test
+    void getProcesses_whenOneProcessRunning_shouldReturnItInList() {
+        // arrange
+        Process process = new Process(1, "process1");
+        mockSystemInfoProvider.addProcess(process);
+        
+        // act
+        List<Process> processes = processService.getProcesses();
+        
+        // assert
+        Assertions.assertEquals(1, processes.size());
+        Assertions.assertEquals(process, processes.getFirst());
+    }
+    
 }
