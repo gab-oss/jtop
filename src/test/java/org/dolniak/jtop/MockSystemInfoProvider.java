@@ -3,12 +3,17 @@ package org.dolniak.jtop;
 import oshi.software.os.OSProcess;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MockOperatingSystemWrapper implements OSWrapper {
+public class MockSystemInfoProvider implements SystemInfoProvider {
 
-    private Map<Integer, OSProcess> processes;
+    private final Map<Integer, OSProcess> processes;
+
+    MockSystemInfoProvider() {
+        this.processes = new HashMap<>();
+    }
 
     @Override
     public List<OSProcess> getProcesses() {

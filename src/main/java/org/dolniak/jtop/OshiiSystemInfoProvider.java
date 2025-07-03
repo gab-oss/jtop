@@ -7,11 +7,11 @@ import oshi.software.os.OperatingSystem;
 import java.util.List;
 
 @Component
-public class BasicOSWrapper implements OSWrapper {
+public class OshiiSystemInfoProvider implements SystemInfoProvider {
 
     private final OperatingSystem os;
 
-    public BasicOSWrapper(OperatingSystem os) {
+    public OshiiSystemInfoProvider(OperatingSystem os) {
         this.os = os;
     }
 
