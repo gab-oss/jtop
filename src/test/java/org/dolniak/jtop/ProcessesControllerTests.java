@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -18,10 +19,16 @@ public class ProcessesControllerTests {
     private MockMvc mockMvc;
 
     @Test
-    public void get_shouldReturnOk() throws Exception {
+    public void getProcesses_shouldReturnOk() throws Exception {
         mockMvc.perform(get("/processes"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
+    }
+
+    @Test
+    public void terminateProcessByPid_whenPidDoesNotExist_shouldReturnNotFound() throws Exception {
+        mockMvc.perform(post("/processes/{pid}/terminate}", -5))
+                .andExpect(status().isNotFound());
     }
 
 }

@@ -1,7 +1,5 @@
 package org.dolniak.jtop;
 
-import oshi.software.os.OSProcess;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +23,16 @@ public class MockSystemInfoProvider implements SystemInfoProvider {
         return processes.get(pid);
     }
 
+    public Map<Integer, Process> getProcessesMock() {
+        return processes;
+    }
+
     public void addProcess(Process process) {
         processes.put(process.pid(), process);
+    }
+
+    public void removeProcesses() {
+        this.processes.clear();
     }
 
 }

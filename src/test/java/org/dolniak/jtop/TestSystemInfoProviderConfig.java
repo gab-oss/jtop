@@ -18,4 +18,15 @@ public class TestSystemInfoProviderConfig {
         return mockSystemInfoProvider;
     }
 
+    @Bean
+    MockProcessKiller mockProcessKiller() {
+        return new MockProcessKiller();
+    }
+
+    @Bean
+    @Primary
+    ProcessKiller processKiller(MockProcessKiller mockProcessKiller) {
+        return mockProcessKiller;
+    }
+
 }

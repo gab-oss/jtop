@@ -1,6 +1,5 @@
 package org.dolniak.jtop;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
@@ -8,11 +7,11 @@ import oshi.software.os.OperatingSystem;
 import java.util.List;
 
 @Component
-public class OshiiSystemInfoProvider implements SystemInfoProvider {
+public class OshiSystemInfoProvider implements SystemInfoProvider {
 
     private final OperatingSystem os;
 
-    public OshiiSystemInfoProvider(OperatingSystem os) {
+    public OshiSystemInfoProvider(OperatingSystem os) {
         this.os = os;
     }
 
