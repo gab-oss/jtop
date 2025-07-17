@@ -27,7 +27,8 @@ public class OshiSystemInfoProvider implements SystemInfoProvider {
     }
 
     private Process convertOsProcess(OSProcess osProcess) {
-        return new Process(osProcess.getProcessID(), osProcess.getName());
+        if (osProcess == null) return null;
+        return new Process(osProcess.getProcessID(), osProcess.getName(), osProcess.getUser());
     }
 
 }

@@ -44,7 +44,7 @@ public class ProcessesServiceTests {
     @Test
     void getProcesses_whenOneProcessRunning_shouldReturnItInList() {
         // arrange
-        Process process = new Process(1, "process1");
+        Process process = new Process(1, "process1", "user");
         mockSystemInfoProvider.addProcess(process);
         
         // act
@@ -58,24 +58,24 @@ public class ProcessesServiceTests {
     @Test
     public void terminateProcess_whenPidDoesNotExist_shouldReturnFalse() {
         // act
-        boolean terminated = processService.terminate(-5);
+        KillAttemptResult terminated = processService.terminate(-5);
 
         // assert
-        Assertions.assertFalse(terminated);
+        Assertions.assertEquals(KillAttemptResult.NOT_FOUND, terminated);
     }
 
     @Test
     public void terminateProcess_whenPidExists_shouldReturnTrue() {
         // arrange
-        Process process = new Process(-5, "process1");
+        Process process = new Process(-5, "process1", "user");
         mockSystemInfoProvider.addProcess(process);
         mockProcessKiller.kill(-5);
 
         // act
-        boolean terminated = processService.terminate(-5);
+        KillAttemptResult terminated = processService.terminate(-5);
 
         // assert
-        Assertions.assertTrue(terminated);
+        Assertions.assertEquals(KillAttemptResult.SUCCESS, terminated);
     }
 
 }
