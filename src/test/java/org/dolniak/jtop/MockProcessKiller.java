@@ -14,7 +14,8 @@ public class MockProcessKiller implements ProcessKiller {
 
     @Override
     public boolean kill(int pid) {
-        return mockSystemInfoProvider.getProcessesMock().containsKey(pid);
+        return !mockSystemInfoProvider.getUnkillableProcesses().contains(pid)
+                && mockSystemInfoProvider.getProcessesMock().containsKey(pid);
     }
 
 }

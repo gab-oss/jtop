@@ -10,6 +10,7 @@ public class ProcessHandleKiller implements ProcessKiller {
     @Override
     public boolean kill(int pid) {
         Optional<ProcessHandle> processHandle = ProcessHandle.of(pid);
+        // todo handle IllegalStateException (tried to kill the current process)
         return processHandle.map(ProcessHandle::destroy).orElse(false);
     }
 

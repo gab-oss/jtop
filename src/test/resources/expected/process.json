@@ -1,4 +1,5 @@
 {
   "pid": -1,
-  "command": "process1"
+  "command": "process1",
+  "owner": "user"
 }

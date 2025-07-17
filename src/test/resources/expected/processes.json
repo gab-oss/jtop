@@ -1,10 +1,12 @@
 [
   {
     "pid": -1,
-    "command": "process1"
+    "command": "process1",
+    "owner": "user"
   },
   {
     "pid": -2,
-    "command": "process2"
+    "command": "process2",
+    "owner": "root"
   }
 ]
