@@ -2,6 +2,7 @@ package org.dolniak.jtop;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,9 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @SpringBootTest
@@ -40,6 +44,15 @@ public class ProcessesServiceTests {
 
     @Value("classpath:expected/processes.json")
     Resource expectedProcessesJson;
+
+    private static final Path LOG_FILE = Paths.get("target/test-logs/test.log");
+
+    @BeforeAll
+    static void clearLogFile() throws Exception {
+        if (Files.exists(LOG_FILE)) {
+            Files.write(LOG_FILE, new byte[0]);
+        }
+    }
 
     @AfterEach
     public void cleanup() {
@@ -89,7 +102,6 @@ public class ProcessesServiceTests {
         String content = new String(expectedProcessJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
         mockSystemInfoProvider.addProcess(process);
-        mockProcessKiller.kill(process.pid());
 
         // act
         KillAttemptResult terminated = processService.terminate(process.pid());

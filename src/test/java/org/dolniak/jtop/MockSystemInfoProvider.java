@@ -45,6 +45,7 @@ public class MockSystemInfoProvider implements SystemInfoProvider {
 
     public void removeProcesses() {
         this.processes.clear();
+        this.unkillableProcesses.clear();
     }
 
 }

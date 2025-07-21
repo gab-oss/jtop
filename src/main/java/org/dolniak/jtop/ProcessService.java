@@ -1,5 +1,7 @@
 package org.dolniak.jtop;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +11,7 @@ public class ProcessService {
 
     private final SystemInfoProvider systemInfoProvider;
     private final ProcessKiller processKiller;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessService.class);
 
     public ProcessService(SystemInfoProvider systemInfoProvider, ProcessKiller processKiller) {
         this.systemInfoProvider = systemInfoProvider;
@@ -21,6 +24,9 @@ public class ProcessService {
 
     public KillAttemptResult terminate(int pid) {
         // todo make info return an optional
+
+        // todo expand logging
+        LOGGER.warn("Attempt to kill {}", pid);
         Process process = systemInfoProvider.getProcess(pid);
         if (process == null) return KillAttemptResult.NOT_FOUND;
         if (process.owner().contains("root")) return KillAttemptResult.NOT_PERMITTED;
