@@ -25,14 +25,27 @@ public class ProcessService {
     public KillAttemptResult terminate(int pid) {
         // todo make info return an optional
 
-        // todo expand logging
-        LOGGER.warn("Attempt to kill {}", pid);
         Process process = systemInfoProvider.getProcess(pid);
-        if (process == null) return KillAttemptResult.NOT_FOUND;
-        if (process.owner().contains("root")) return KillAttemptResult.NOT_PERMITTED;
+        if (process == null) {
+            LOGGER.warn("Failed to kill: pid {}; process was null", pid);
+            return KillAttemptResult.NOT_FOUND;
+        }
+        if (isKillingPermitted(process)) {
+            LOGGER.warn("Failed to kill: pid {}; owner was root", pid);
+            return KillAttemptResult.NOT_PERMITTED;
+        }
 
-        if (processKiller.kill(pid)) return KillAttemptResult.SUCCESS;
-        else return KillAttemptResult.FAILED;
+        if (processKiller.kill(pid)) {
+            LOGGER.info("Killed: pid {}, command {}, owner {}", pid, process.command(), process.owner());
+            return KillAttemptResult.SUCCESS;
+        }
+
+        LOGGER.warn("Failed to kill: pid {}, command {}, owner {}", pid, process.command(), process.owner());
+        return KillAttemptResult.FAILED;
+    }
+
+    private boolean isKillingPermitted(Process process) {
+        return process.owner().contains("root");
     }
 
     public Optional<Process> getProcessById(int pid) {
