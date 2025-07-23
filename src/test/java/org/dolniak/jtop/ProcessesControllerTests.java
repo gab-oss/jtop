@@ -26,7 +26,7 @@ import org.springframework.boot.test.json.JacksonTester;
 
 @WebMvcTest(ProcessesController.class)
 @AutoConfigureJsonTesters
-@Import(ProcessesControllerTests.TestConfig.class)
+@Import({ProcessesControllerTests.TestConfig.class, NoSecurityConfig.class})
 public class ProcessesControllerTests {
 
     @Autowired
