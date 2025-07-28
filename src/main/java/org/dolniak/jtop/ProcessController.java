@@ -11,6 +11,10 @@ import java.util.Optional;
 @RestController
 public class ProcessController {
 
+    private static final String GET_ALL = "/processes";
+    private static final String GET_BY_ID = "/processes/{id}";
+    private static final String POST_KILL = "/processes/{pid}/terminate";
+
     private final ProcessService processService;
 
     @Autowired
@@ -18,12 +22,12 @@ public class ProcessController {
         this.processService = processService;
     }
 
-    @GetMapping("/processes")
+    @GetMapping(GET_ALL)
     private ResponseEntity<Iterable<Process>> getProcesses() {
         return ResponseEntity.ok(processService.getProcesses());
     }
 
-    @GetMapping("/processes/{id}")
+    @GetMapping(GET_BY_ID)
     private ResponseEntity<?> getProcessById(@PathVariable Integer id) {
         Optional<Process> process = processService.getProcessById(id);
         if (process.isPresent()) {
@@ -34,14 +38,12 @@ public class ProcessController {
                 .body(Map.of("error", String.format(Messages.PROCESS_NOT_FOUND, id)));
     }
 
-    @PostMapping("/processes/{id}/terminate")
+    @PostMapping(POST_KILL)
     private ResponseEntity<Void> terminateProcess(@PathVariable Integer id) {
-        // todo refactor
         KillAttemptResult result = processService.terminate(id);
         if (result == KillAttemptResult.SUCCESS) return ResponseEntity.accepted().build();
         if (result == KillAttemptResult.NOT_PERMITTED) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         if (result == KillAttemptResult.FAILED) return ResponseEntity.status(HttpStatus.CONFLICT).build();
         else return ResponseEntity.notFound().build();
     }
-
 }

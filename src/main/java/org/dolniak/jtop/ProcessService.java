@@ -23,18 +23,18 @@ public class ProcessService {
     }
 
     public KillAttemptResult terminate(int pid) {
-        // todo make info return an optional
-
         if (isCurrentProcess(pid)) {
             LOGGER.warn("Failed to kill: pid {}; current process", pid);
             return KillAttemptResult.FAILED;
         }
 
-        Process process = systemInfoProvider.getProcessById(pid);
-        if (process == null) {
+        Optional<Process> optProcess = systemInfoProvider.getProcessById(pid);
+        if (optProcess.isEmpty()) {
             LOGGER.warn("Failed to kill: pid {}; process was null", pid);
             return KillAttemptResult.NOT_FOUND;
         }
+
+        Process process = optProcess.get();
         if (isKillingPermitted(process)) {
             LOGGER.warn("Failed to kill: pid {}; owner was root", pid);
             return KillAttemptResult.NOT_PERMITTED;
@@ -58,6 +58,6 @@ public class ProcessService {
     }
 
     public Optional<Process> getProcessById(int pid) {
-        return Optional.ofNullable(systemInfoProvider.getProcessById(pid));
+        return systemInfoProvider.getProcessById(pid);
     }
 }

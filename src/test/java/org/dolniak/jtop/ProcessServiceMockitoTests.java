@@ -59,7 +59,7 @@ public class ProcessServiceMockitoTests {
     void getProcessById_whenNotRunning_shouldReturnEmpty() throws IOException {
         // arrange
         int id = -100;
-        Mockito.when(systemInfoProvider.getProcessById(Mockito.anyInt())).thenReturn(null);
+        Mockito.when(systemInfoProvider.getProcessById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         // act
         Optional<Process> actualProcess = processService.getProcessById(id);
@@ -73,7 +73,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(process);
+        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
 
         // act
         Optional<Process> actualProcess = processService.getProcessById(process.pid());
@@ -140,7 +140,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(process);
+        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
         Mockito.when(processKiller.kill(process.pid())).thenReturn(true);
 
         // act
@@ -155,7 +155,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(rootProcessJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(process);
+        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
 
         // act
         KillAttemptResult terminated = processService.terminate(process.pid());
@@ -169,7 +169,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(process);
+        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
         Mockito.when(processKiller.kill(process.pid())).thenReturn(false);
 
         // act

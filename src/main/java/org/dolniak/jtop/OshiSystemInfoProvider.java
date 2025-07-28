@@ -5,6 +5,7 @@ import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class OshiSystemInfoProvider implements SystemInfoProvider {
@@ -22,8 +23,8 @@ public class OshiSystemInfoProvider implements SystemInfoProvider {
     }
 
     @Override
-    public Process getProcessById(int pid) {
-        return convertOsProcess(os.getProcess(pid));
+    public Optional<Process> getProcessById(int pid) {
+        return Optional.ofNullable(convertOsProcess(os.getProcess(pid)));
     }
 
     // todo refactor - does not use oshi
