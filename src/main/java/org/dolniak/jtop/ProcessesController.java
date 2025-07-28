@@ -37,7 +37,7 @@ public class ProcessesController {
     @PostMapping("/processes/{id}/terminate")
     private ResponseEntity<Void> terminateProcess(@PathVariable Integer id) {
         // todo refactor
-        KillAttemptResult result = processService.terminate(id);
+        KillAttemptResult result = processService.terminate(id, false);
         if (result == KillAttemptResult.SUCCESS) return ResponseEntity.accepted().build();
         if (result == KillAttemptResult.NOT_PERMITTED) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         if (result == KillAttemptResult.FAILED) return ResponseEntity.status(HttpStatus.CONFLICT).build();

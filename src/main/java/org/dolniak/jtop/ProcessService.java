@@ -22,7 +22,7 @@ public class ProcessService {
         return systemInfoProvider.getProcesses();
     }
 
-    public KillAttemptResult terminate(int pid) {
+    public KillAttemptResult terminate(int pid, boolean force) {
         // todo make info return an optional
 
         Process process = systemInfoProvider.getProcess(pid);
@@ -30,13 +30,18 @@ public class ProcessService {
             LOGGER.warn("Failed to kill: pid {}; process was null", pid);
             return KillAttemptResult.NOT_FOUND;
         }
-        if (isKillingPermitted(process)) {
+        if (isKillingForbidden(process)) {
             LOGGER.warn("Failed to kill: pid {}; owner was root", pid);
             return KillAttemptResult.NOT_PERMITTED;
         }
 
-        if (processKiller.kill(pid)) {
-            LOGGER.info("Killed: pid {}, command {}, owner {}", pid, process.command(), process.owner());
+        boolean success = force
+                ? processKiller.forceKill(pid)
+                : processKiller.kill(pid);
+
+        if (success) {
+            String method = force ? "Force-killed" : "Killed";
+            LOGGER.info("{}: pid {}, command {}, owner {}", method, pid, process.command(), process.owner());
             return KillAttemptResult.SUCCESS;
         }
 
@@ -44,7 +49,7 @@ public class ProcessService {
         return KillAttemptResult.FAILED;
     }
 
-    private boolean isKillingPermitted(Process process) {
+    private boolean isKillingForbidden(Process process) {
         return process.owner().contains("root");
     }
 

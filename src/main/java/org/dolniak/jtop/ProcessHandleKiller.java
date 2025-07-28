@@ -14,4 +14,11 @@ public class ProcessHandleKiller implements ProcessKiller {
         return processHandle.map(ProcessHandle::destroy).orElse(false);
     }
 
+    @Override
+    public boolean forceKill(int pid) {
+        Optional<ProcessHandle> processHandle = ProcessHandle.of(pid);
+        // todo handle IllegalStateException (tried to kill the current process)
+        return processHandle.map(ProcessHandle::destroyForcibly).orElse(false);
+    }
+
 }

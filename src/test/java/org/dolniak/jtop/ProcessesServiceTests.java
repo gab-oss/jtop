@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -86,11 +88,10 @@ public class ProcessesServiceTests {
     }
 
 
-
     @Test
     public void terminateProcess_whenPidDoesNotExist_shouldReturnNotFound() {
         // act
-        KillAttemptResult terminated = processService.terminate(-100);
+        KillAttemptResult terminated = processService.terminate(-100, false);
 
         // assert
         Assertions.assertEquals(KillAttemptResult.NOT_FOUND, terminated);
@@ -104,7 +105,7 @@ public class ProcessesServiceTests {
         mockSystemInfoProvider.addProcess(process);
 
         // act
-        KillAttemptResult terminated = processService.terminate(process.pid());
+        KillAttemptResult terminated = processService.terminate(process.pid(), false);
 
         // assert
         Assertions.assertEquals(KillAttemptResult.SUCCESS, terminated);
@@ -120,7 +121,7 @@ public class ProcessesServiceTests {
         int rootsProcessPid = -2;
 
         // act
-        KillAttemptResult terminated = processService.terminate(rootsProcessPid);
+        KillAttemptResult terminated = processService.terminate(rootsProcessPid, false);
 
         // assert
         Assertions.assertEquals(KillAttemptResult.NOT_PERMITTED, terminated);
@@ -135,7 +136,7 @@ public class ProcessesServiceTests {
         mockProcessKiller.kill(process.pid());
 
         // act
-        KillAttemptResult terminated = processService.terminate(process.pid());
+        KillAttemptResult terminated = processService.terminate(process.pid(), false);
 
         // assert
         Assertions.assertEquals(KillAttemptResult.FAILED, terminated);

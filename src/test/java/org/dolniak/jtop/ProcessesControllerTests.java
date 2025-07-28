@@ -49,7 +49,7 @@ public class ProcessesControllerTests {
 
     private static final String GET_ALL = "/processes";
     private static final String GET_BY_ID = "/processes/{id}";
-    private static final String POST_KILL = "/processes/{pid}/terminate";
+    private static final String POST_KILL = "/processes/{pid}/terminate?term";
 
     @TestConfiguration
     static class TestConfig {
@@ -97,7 +97,7 @@ public class ProcessesControllerTests {
     @Test
     public void terminateProcessByPid_whenPidDoesNotExist_shouldReturnNotFound() throws Exception {
         int id = -100;
-        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(KillAttemptResult.NOT_FOUND);
+        Mockito.when(processService.terminate(Mockito.anyInt(), Mockito.anyBoolean())).thenReturn(KillAttemptResult.NOT_FOUND);
         mockMvc.perform(post(POST_KILL, id))
                 .andExpect(status().isNotFound());
     }
@@ -105,7 +105,7 @@ public class ProcessesControllerTests {
     @Test
     public void terminateProcessByPid_whenPidExists_shouldReturnAccepted() throws Exception {
         int id = -100;
-        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(KillAttemptResult.SUCCESS);
+        Mockito.when(processService.terminate(Mockito.anyInt(), Mockito.eq(false))).thenReturn(KillAttemptResult.SUCCESS);
         mockMvc.perform(post("/processes/{pid}/terminate", id))
                 .andExpect(status().isAccepted());
     }
@@ -114,7 +114,7 @@ public class ProcessesControllerTests {
     @Test
     public void terminateProcessByPid_ifNotPermitted_shouldReturnForbidden() throws Exception {
         int id = -100;
-        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(KillAttemptResult.NOT_PERMITTED);
+        Mockito.when(processService.terminate(Mockito.anyInt(), Mockito.anyBoolean())).thenReturn(KillAttemptResult.NOT_PERMITTED);
 
         mockMvc.perform(post(POST_KILL, id))
                 .andExpect(status().isForbidden());
@@ -123,7 +123,7 @@ public class ProcessesControllerTests {
     @Test
     public void terminateProcessByPid_ifFailed_shouldReturnConflict() throws Exception {
         int id = -100;
-        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(KillAttemptResult.FAILED);
+        Mockito.when(processService.terminate(Mockito.anyInt(), Mockito.eq(false))).thenReturn(KillAttemptResult.FAILED);
 
         mockMvc.perform(post(POST_KILL, id))
                 .andExpect(status().isConflict());
