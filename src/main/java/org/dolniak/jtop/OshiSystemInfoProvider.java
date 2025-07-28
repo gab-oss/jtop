@@ -22,8 +22,14 @@ public class OshiSystemInfoProvider implements SystemInfoProvider {
     }
 
     @Override
-    public Process getProcess(int pid) {
+    public Process getProcessById(int pid) {
         return convertOsProcess(os.getProcess(pid));
+    }
+
+    // todo refactor - does not use oshi
+    @Override
+    public int getCurrentProcessId() {
+        return Math.toIntExact(ProcessHandle.current().pid());
     }
 
     private Process convertOsProcess(OSProcess osProcess) {

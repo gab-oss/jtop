@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-public class ProcessesController {
+public class ProcessController {
 
     private final ProcessService processService;
 
     @Autowired
-    ProcessesController(ProcessService processService) {
+    ProcessController(ProcessService processService) {
         this.processService = processService;
     }
 
