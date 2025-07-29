@@ -1,5 +1,8 @@
 package org.dolniak.jtop;
 
+import org.dolniak.jtop.exceptions.FailedToKillProcessException;
+import org.dolniak.jtop.exceptions.NoPermissionToKillProcessException;
+import org.dolniak.jtop.exceptions.ProcessNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +68,7 @@ public class ProcessControllerMockitoTests {
 
     @Test
     public void getProcessById_ifExists_shouldReturnOk() throws Exception {
+        // todo extract setup
         String content = new String(expectedProcessJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
         Mockito.when(processService.getProcessById(Mockito.anyInt())).thenReturn(Optional.of(process));
@@ -81,24 +85,31 @@ public class ProcessControllerMockitoTests {
         Mockito.when(processService.getProcessById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         mockMvc.perform(get(GET_BY_ID, id))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentType(CONTENT_JSON))
-                .andExpect(content().json("{ error: \"" + String.format(Messages.PROCESS_NOT_FOUND, id) + "\" }"));
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void terminateProcessByPid_whenPidExists_shouldReturnAccepted() throws Exception {
         int id = -100;
-        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(KillAttemptResult.SUCCESS);
+        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(true);
 
         mockMvc.perform(post(POST_KILL, id))
                 .andExpect(status().isAccepted());
     }
 
     @Test
+    public void terminateProcessByPid_whenNotFound_shouldReturnNotFound() throws Exception {
+        int id = -100;
+        Mockito.when(processService.terminate(Mockito.anyInt())).thenThrow(new ProcessNotFoundException());
+
+        mockMvc.perform(post(POST_KILL, id))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void terminateProcessByPid_ifNotPermitted_shouldReturnForbidden() throws Exception {
         int id = -100;
-        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(KillAttemptResult.NOT_PERMITTED);
+        Mockito.when(processService.terminate(Mockito.anyInt())).thenThrow(new NoPermissionToKillProcessException());
 
         mockMvc.perform(post(POST_KILL, id))
                 .andExpect(status().isForbidden());
@@ -107,7 +118,7 @@ public class ProcessControllerMockitoTests {
     @Test
     public void terminateProcessByPid_ifFailed_shouldReturnConflict() throws Exception {
         int id = -100;
-        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(KillAttemptResult.FAILED);
+        Mockito.when(processService.terminate(Mockito.anyInt())).thenReturn(false);
 
         mockMvc.perform(post(POST_KILL, id))
                 .andExpect(status().isConflict());

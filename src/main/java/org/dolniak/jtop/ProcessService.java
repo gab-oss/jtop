@@ -1,5 +1,9 @@
 package org.dolniak.jtop;
 
+import org.dolniak.jtop.exceptions.FailedToKillProcessException;
+import org.dolniak.jtop.exceptions.NoPermissionToKillProcessException;
+import org.dolniak.jtop.exceptions.ProcessNotFoundException;
+import org.dolniak.jtop.exceptions.TriedToKillCurrentProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,31 +26,31 @@ public class ProcessService {
         return systemInfoProvider.getProcesses();
     }
 
-    public KillAttemptResult terminate(int pid) {
+    public boolean terminate(int pid) {
         if (isCurrentProcess(pid)) {
             LOGGER.warn("Failed to kill: pid {}; current process", pid);
-            return KillAttemptResult.FAILED;
+            throw new TriedToKillCurrentProcessException();
         }
 
         Optional<Process> optProcess = systemInfoProvider.getProcessById(pid);
         if (optProcess.isEmpty()) {
             LOGGER.warn("Failed to kill: pid {}; process was null", pid);
-            return KillAttemptResult.NOT_FOUND;
+            throw new ProcessNotFoundException();
         }
 
         Process process = optProcess.get();
         if (isKillingPermitted(process)) {
             LOGGER.warn("Failed to kill: pid {}; owner was root", pid);
-            return KillAttemptResult.NOT_PERMITTED;
+            throw new NoPermissionToKillProcessException();
         }
 
         if (processKiller.kill(pid)) {
             LOGGER.info("Killed: pid {}, command {}, owner {}", pid, process.command(), process.owner());
-            return KillAttemptResult.SUCCESS;
+            return true;
         }
 
         LOGGER.warn("Failed to kill: pid {}, command {}, owner {}", pid, process.command(), process.owner());
-        return KillAttemptResult.FAILED;
+        return false;
     }
 
     private boolean isCurrentProcess(int pid) {

@@ -1,5 +1,9 @@
 package org.dolniak.jtop;
 
+import org.dolniak.jtop.exceptions.FailedToKillProcessException;
+import org.dolniak.jtop.exceptions.NoPermissionToKillProcessException;
+import org.dolniak.jtop.exceptions.ProcessNotFoundException;
+import org.dolniak.jtop.exceptions.TriedToKillCurrentProcessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,6 +26,8 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @AutoConfigureJsonTesters
@@ -116,11 +122,10 @@ public class ProcessServiceMockitoTests {
         int id = -100;
         Mockito.when(systemInfoProvider.getCurrentProcessId()).thenReturn(id);
 
-        // act
-        KillAttemptResult killAttemptResult = processService.terminate(id);
-
-        //assert
-        Assertions.assertEquals(KillAttemptResult.FAILED, killAttemptResult);
+        // act + assert
+        assertThrows(TriedToKillCurrentProcessException.class, () -> {
+            processService.terminate(id);
+        });
     }
 
     @Test
@@ -128,11 +133,10 @@ public class ProcessServiceMockitoTests {
         // arrange
         int id = -100;
 
-        // act
-        KillAttemptResult terminated = processService.terminate(id);
-
-        // assert
-        Assertions.assertEquals(KillAttemptResult.NOT_FOUND, terminated);
+        // act + assert
+        assertThrows(ProcessNotFoundException.class, () -> {
+            processService.terminate(id);
+        });
     }
 
     @Test
@@ -144,10 +148,10 @@ public class ProcessServiceMockitoTests {
         Mockito.when(processKiller.kill(process.pid())).thenReturn(true);
 
         // act
-        KillAttemptResult terminated = processService.terminate(process.pid());
+        boolean terminated = processService.terminate(process.pid());
 
         // assert
-        Assertions.assertEquals(KillAttemptResult.SUCCESS, terminated);
+        Assertions.assertTrue(terminated);
     }
 
     @Test
@@ -157,11 +161,10 @@ public class ProcessServiceMockitoTests {
         Process process = json.parseObject(content);
         Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
 
-        // act
-        KillAttemptResult terminated = processService.terminate(process.pid());
-
-        // assert
-        Assertions.assertEquals(KillAttemptResult.NOT_PERMITTED, terminated);
+        // act + assert
+        assertThrows(NoPermissionToKillProcessException.class, () -> {
+            processService.terminate(process.pid());
+        });
     }
 
     @Test
@@ -173,9 +176,9 @@ public class ProcessServiceMockitoTests {
         Mockito.when(processKiller.kill(process.pid())).thenReturn(false);
 
         // act
-        KillAttemptResult terminated = processService.terminate(process.pid());
+        boolean terminated = processService.terminate(process.pid());
 
         // assert
-        Assertions.assertEquals(KillAttemptResult.FAILED, terminated);
+        Assertions.assertFalse(terminated);
     }
 }

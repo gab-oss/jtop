@@ -1,8 +1,14 @@
 package org.dolniak.jtop;
 
+import org.dolniak.jtop.exceptions.FailedToKillProcessException;
+import org.dolniak.jtop.exceptions.NoPermissionToKillProcessException;
+import org.dolniak.jtop.exceptions.ProcessNotFoundException;
+import org.dolniak.jtop.exceptions.TriedToKillCurrentProcessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -11,9 +17,26 @@ import java.util.Optional;
 @RestController
 public class ProcessController {
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public void handleProcessNotFound(ProcessNotFoundException ex) {}
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler
+    public void handleUnkillableProcess(FailedToKillProcessException ex) {}
+
+    // todo add messages
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({
+            NoPermissionToKillProcessException.class,
+            TriedToKillCurrentProcessException.class
+    })
+    public void handleLackOfPermissions(RuntimeException ex) {}
+
+    // todo move, reuse in tests
     private static final String GET_ALL = "/processes";
     private static final String GET_BY_ID = "/processes/{id}";
-    private static final String POST_KILL = "/processes/{pid}/terminate";
+    private static final String POST_KILL = "/processes/{id}/terminate";
 
     private final ProcessService processService;
 
@@ -33,17 +56,12 @@ public class ProcessController {
         if (process.isPresent()) {
             return ResponseEntity.ok(process.get());
         }
-        // todo better handling of errors, remove '?'
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", String.format(Messages.PROCESS_NOT_FOUND, id)));
+        throw new ProcessNotFoundException();
     }
 
     @PostMapping(POST_KILL)
     private ResponseEntity<Void> terminateProcess(@PathVariable Integer id) {
-        KillAttemptResult result = processService.terminate(id);
-        if (result == KillAttemptResult.SUCCESS) return ResponseEntity.accepted().build();
-        if (result == KillAttemptResult.NOT_PERMITTED) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        if (result == KillAttemptResult.FAILED) return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        else return ResponseEntity.notFound().build();
+        if (processService.terminate(id)) return ResponseEntity.accepted().build();
+        throw new FailedToKillProcessException();
     }
 }
