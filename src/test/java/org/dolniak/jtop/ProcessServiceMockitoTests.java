@@ -117,15 +117,18 @@ public class ProcessServiceMockitoTests {
     }
 
     @Test
-    void terminateProcess_whenPidForCurrentProcess_shouldReturnFailed() {
+    void terminateProcess_whenPidForCurrentProcess_shouldReturnFailed() throws IOException {
         // arrange
-        int id = -100;
-        Mockito.when(systemInfoProvider.getCurrentProcessId()).thenReturn(id);
+        String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        Process process = json.parseObject(content);
+        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
+        Mockito.when(systemInfoProvider.getCurrentProcessId()).thenReturn(process.pid());
 
         // act + assert
         assertThrows(TriedToKillCurrentProcessException.class, () -> {
-            processService.terminate(id);
+            processService.terminate(process.pid());
         });
+
     }
 
     @Test
