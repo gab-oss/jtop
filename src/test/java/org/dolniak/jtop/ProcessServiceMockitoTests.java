@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
 
 @SpringBootTest
 @AutoConfigureJsonTesters
@@ -116,8 +119,9 @@ public class ProcessServiceMockitoTests {
         Assertions.assertEquals(process, processes.getFirst());
     }
 
-    @Test
-    void terminateProcess_whenPidForCurrentProcess_shouldReturnFailed() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void terminateProcess_whenPidForCurrentProcess_shouldReturnFailed(boolean force) throws IOException {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
@@ -126,39 +130,43 @@ public class ProcessServiceMockitoTests {
 
         // act + assert
         assertThrows(TriedToKillCurrentProcessException.class, () -> {
-            processService.terminate(process.pid());
+            processService.terminate(process.pid(), force);
         });
-
+        Mockito.verify(processKiller, never()).kill(process.pid(), force);
     }
 
-    @Test
-    void terminateProcess_whenPidDoesNotExist_shouldReturnNotFound() {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void terminateProcess_whenPidDoesNotExist_shouldReturnNotFound(boolean force) {
         // arrange
         int id = -100;
 
         // act + assert
         assertThrows(ProcessNotFoundException.class, () -> {
-            processService.terminate(id);
+            processService.terminate(id, force);
         });
     }
 
-    @Test
-    void terminateProcess_whenPidExists_shouldReturnSuccess() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void terminateProcess_whenPidExists_shouldReturnSuccess(boolean force) throws IOException {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
         Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
-        Mockito.when(processKiller.kill(process.pid())).thenReturn(true);
+        Mockito.when(processKiller.kill(process.pid(), force)).thenReturn(true);
 
         // act
-        boolean terminated = processService.terminate(process.pid());
+        boolean terminated = processService.terminate(process.pid(), force);
 
         // assert
         Assertions.assertTrue(terminated);
+        Mockito.verify(processKiller).kill(process.pid(), force);
     }
 
-    @Test
-    void terminateProcess_whenOwnedByRoot_shouldReturnNotPermitted() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void terminateProcess_whenOwnedByRoot_shouldReturnNotPermitted(boolean force) throws IOException {
         // arrange
         String content = new String(rootProcessJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
@@ -166,22 +174,25 @@ public class ProcessServiceMockitoTests {
 
         // act + assert
         assertThrows(NoPermissionToKillProcessException.class, () -> {
-            processService.terminate(process.pid());
+            processService.terminate(process.pid(), force);
         });
+        Mockito.verify(processKiller, never()).kill(process.pid(), force);
     }
 
-    @Test
-    void terminateProcess_whenKillingFailed_shouldReturnFailed() throws IOException {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void terminateProcess_whenKillingFailed_shouldReturnFailed(boolean force) throws IOException {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
         Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
-        Mockito.when(processKiller.kill(process.pid())).thenReturn(false);
+        Mockito.when(processKiller.kill(process.pid(), force)).thenReturn(false);
 
         // act
-        boolean terminated = processService.terminate(process.pid());
+        boolean terminated = processService.terminate(process.pid(), force);
 
         // assert
         Assertions.assertFalse(terminated);
+        Mockito.verify(processKiller).kill(process.pid(), force);
     }
 }

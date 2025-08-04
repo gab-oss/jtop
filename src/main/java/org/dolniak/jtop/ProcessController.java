@@ -60,8 +60,9 @@ public class ProcessController {
     }
 
     @PostMapping(POST_KILL)
-    private ResponseEntity<Void> terminateProcess(@PathVariable Integer id) {
-        if (processService.terminate(id)) return ResponseEntity.accepted().build();
+    private ResponseEntity<Void> terminateProcess(@PathVariable Integer id,
+                                                  @RequestParam(defaultValue="false") boolean force) {
+        if (processService.terminate(id, force)) return ResponseEntity.accepted().build();
         throw new FailedToKillProcessException();
     }
 }

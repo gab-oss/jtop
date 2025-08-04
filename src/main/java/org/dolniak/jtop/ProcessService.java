@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +31,8 @@ public class ProcessService {
         return systemInfoProvider.getProcesses();
     }
 
-    public boolean terminate(int pid) {
-        ActionType actionType = ActionType.SIGTERM; // todo add sigkill
+    public boolean terminate(int pid, boolean force) {
+        ActionType actionType = force ? ActionType.SIGKILL : ActionType.SIGTERM;
         Optional<Process> optProcess = systemInfoProvider.getProcessById(pid);
 
         if (optProcess.isEmpty()) {
@@ -54,7 +55,7 @@ public class ProcessService {
             throw new NoPermissionToKillProcessException();
         }
 
-        if (processKiller.kill(pid)) {
+        if (processKiller.kill(pid, force)) {
             LOGGER.info("Killed: pid {}, command {}, owner {}", pid, process.command(), process.owner());
             actionLogService.logSuccessfulTermination(process, actionType);
             return true;
