@@ -11,29 +11,15 @@ public class ActionLogService {
         this.actionLogRepository = actionLogRepository;
     }
 
-    public void logFailedTerminationAtt(Process process, ActionType actionType) {
-        ActionLogEntity actionLogEntity = new ActionLogEntity.Builder(
-                process.pid(), actionType)
-                .command(process.command())
-                .owner(process.owner())
-                .comment(ActionComment.FAILED)
-                .build();
-
-        actionLogRepository.save(actionLogEntity);
+    public void logFailedTerminationAttempt(Process process, ActionType actionType) {
+        logWithAllParams(process, actionType, ActionComment.FAILED);
     }
 
-    public void logNotPermittedTerminationAtt(Process process, ActionType actionType) {
-        ActionLogEntity actionLogEntity = new ActionLogEntity.Builder(
-                process.pid(), actionType)
-                .command(process.command())
-                .owner(process.owner())
-                .comment(ActionComment.NO_PERMISSION)
-                .build();
-
-        actionLogRepository.save(actionLogEntity);
+    public void logNotPermittedTerminationAttempt(Process process, ActionType actionType) {
+        logWithAllParams(process, actionType, ActionComment.NO_PERMISSION);
     }
 
-    public void logProcessNotFoundTerminationAtt(int pid, ActionType actionType) {
+    public void logProcessNotFoundTerminationAttempt(int pid, ActionType actionType) {
         ActionLogEntity actionLogEntity = new ActionLogEntity.Builder(
                 pid, actionType)
                 .comment(ActionComment.NOT_FOUND)
@@ -42,23 +28,20 @@ public class ActionLogService {
         actionLogRepository.save(actionLogEntity);
     }
 
-    public void logCurrentProcessTerminationAtt(Process process, ActionType actionType) {
-        ActionLogEntity actionLogEntity = new ActionLogEntity.Builder(
-                process.pid(), actionType)
-                .command(process.command())
-                .owner(process.owner())
-                .comment(ActionComment.CURRENT_PROCESS)
-                .build();
-
-        actionLogRepository.save(actionLogEntity);
+    public void logCurrentProcessTerminationAttempt(Process process, ActionType actionType) {
+        logWithAllParams(process, actionType, ActionComment.CURRENT_PROCESS);
     }
 
     public void logSuccessfulTermination(Process process, ActionType actionType) {
+        logWithAllParams(process, actionType, ActionComment.SUCCESS);
+    }
+
+    private void logWithAllParams(Process process, ActionType actionType, ActionComment actionComment) {
         ActionLogEntity actionLogEntity = new ActionLogEntity.Builder(
                 process.pid(), actionType)
                 .command(process.command())
                 .owner(process.owner())
-                .comment(ActionComment.SUCCESS)
+                .comment(actionComment)
                 .build();
 
         actionLogRepository.save(actionLogEntity);

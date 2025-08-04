@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +35,7 @@ public class ProcessService {
 
         if (optProcess.isEmpty()) {
             LOGGER.warn("Failed to kill: pid {}; process was null", pid);
-            actionLogService.logProcessNotFoundTerminationAtt(pid, actionType);
+            actionLogService.logProcessNotFoundTerminationAttempt(pid, actionType);
             throw new ProcessNotFoundException();
         }
 
@@ -45,13 +43,13 @@ public class ProcessService {
 
         if (isCurrentProcess(pid)) {
             LOGGER.warn("Failed to kill: pid {}; current process", pid);
-            actionLogService.logCurrentProcessTerminationAtt(process, actionType);
+            actionLogService.logCurrentProcessTerminationAttempt(process, actionType);
             throw new TriedToKillCurrentProcessException();
         }
 
         if (isKillingPermitted(process)) {
             LOGGER.warn("Failed to kill: pid {}; owner was root", pid);
-            actionLogService.logNotPermittedTerminationAtt(process, actionType);
+            actionLogService.logNotPermittedTerminationAttempt(process, actionType);
             throw new NoPermissionToKillProcessException();
         }
 
@@ -62,7 +60,7 @@ public class ProcessService {
         }
 
         LOGGER.warn("Failed to kill: pid {}, command {}, owner {}", pid, process.command(), process.owner());
-        actionLogService.logFailedTerminationAtt(process, actionType);
+        actionLogService.logFailedTerminationAttempt(process, actionType);
         return false;
     }
 

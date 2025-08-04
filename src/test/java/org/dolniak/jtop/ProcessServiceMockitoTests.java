@@ -1,6 +1,5 @@
 package org.dolniak.jtop;
 
-import org.dolniak.jtop.exceptions.FailedToKillProcessException;
 import org.dolniak.jtop.exceptions.NoPermissionToKillProcessException;
 import org.dolniak.jtop.exceptions.ProcessNotFoundException;
 import org.dolniak.jtop.exceptions.TriedToKillCurrentProcessException;
