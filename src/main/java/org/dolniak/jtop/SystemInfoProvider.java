@@ -1,13 +1,17 @@
 package org.dolniak.jtop;
 
-import java.util.List;
-import java.util.Optional;
+import org.dolniak.jtop.exceptions.SystemInfoLoadingException;
+import oshi.SystemInfo;
 
-public interface SystemInfoProvider {
+public class SystemInfoProvider {
 
-    List<Process> getProcesses();
+    public long getTotalMemory() {
+        try {
+            return new SystemInfo().getHardware().getMemory().getTotal();
+        } catch (Exception e) {
+            throw new SystemInfoLoadingException();
+        }
+    }
 
-    Optional<Process> getProcessById(int pid);
-
-    int getCurrentProcessId();
+    public SystemInfoProvider() {}
 }

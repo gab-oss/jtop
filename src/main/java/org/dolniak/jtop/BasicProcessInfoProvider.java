@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class OshiSystemInfoProvider implements SystemInfoProvider {
+public class BasicProcessInfoProvider implements ProcessInfoProvider {
 
     private final OperatingSystem os;
 
-    public OshiSystemInfoProvider(OperatingSystem os) {
+    public BasicProcessInfoProvider(OperatingSystem os) {
         this.os = os;
     }
 
@@ -27,20 +27,14 @@ public class OshiSystemInfoProvider implements SystemInfoProvider {
         return Optional.ofNullable(convertOsProcess(os.getProcess(pid)));
     }
 
-    // todo refactor - does not use oshi
     @Override
     public int getCurrentProcessId() {
         return Math.toIntExact(ProcessHandle.current().pid());
     }
 
     private Process convertOsProcess(OSProcess osProcess) {
-        /*
-        todo
-        state,
-        cpu load,
-        memory load
-         */
         if (osProcess == null) return null;
-        return new Process(osProcess.getProcessID(), osProcess.getName(), osProcess.getUser());
+        return new Process(osProcess.getProcessID(), osProcess.getName(), osProcess.getUser(),
+                osProcess.getState().name(), osProcess.getResidentSetSize(), osProcess.getProcessCpuLoadCumulative());
     }
 }

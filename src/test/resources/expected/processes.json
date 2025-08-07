@@ -2,11 +2,17 @@
   {
     "pid": -1,
     "command": "process1",
-    "owner": "user"
+    "owner": "user",
+    "state": "R",
+    "residentSetSize": 5,
+    "cumulativeCpu": 0.5
   },
   {
     "pid": -2,
     "command": "process2",
-    "owner": "root"
+    "owner": "root",
+    "state": "R",
+    "residentSetSize": 5,
+    "cumulativeCpu": 0.5
   }
 ]

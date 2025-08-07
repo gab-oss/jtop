@@ -37,7 +37,7 @@ import static org.mockito.Mockito.never;
 public class ProcessServiceMockitoTests {
 
     @MockitoBean
-    SystemInfoProvider systemInfoProvider;
+    ProcessInfoProvider processInfoProvider;
 
     @MockitoBean
     ProcessKiller processKiller;
@@ -67,7 +67,7 @@ public class ProcessServiceMockitoTests {
     void getProcessById_whenNotRunning_shouldReturnEmpty() throws IOException {
         // arrange
         int id = -100;
-        Mockito.when(systemInfoProvider.getProcessById(Mockito.anyInt())).thenReturn(Optional.empty());
+        Mockito.when(processInfoProvider.getProcessById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         // act
         Optional<Process> actualProcess = processService.getProcessById(id);
@@ -81,7 +81,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
+        Mockito.when(processInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
 
         // act
         Optional<Process> actualProcess = processService.getProcessById(process.pid());
@@ -94,7 +94,7 @@ public class ProcessServiceMockitoTests {
     @Test
     void getProcesses_whenNoProcessRunning_shouldRespondWithEmptyList() { // a bit of an artificial case
         // arrange
-        Mockito.when(systemInfoProvider.getProcesses()).thenReturn(Collections.emptyList());
+        Mockito.when(processInfoProvider.getProcesses()).thenReturn(Collections.emptyList());
 
         // act
         List<Process> processes = processService.getProcesses();
@@ -108,7 +108,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcesses()).thenReturn(Collections.singletonList(process));
+        Mockito.when(processInfoProvider.getProcesses()).thenReturn(Collections.singletonList(process));
 
         // act
         List<Process> processes = processService.getProcesses();
@@ -124,8 +124,8 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
-        Mockito.when(systemInfoProvider.getCurrentProcessId()).thenReturn(process.pid());
+        Mockito.when(processInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
+        Mockito.when(processInfoProvider.getCurrentProcessId()).thenReturn(process.pid());
 
         // act + assert
         assertThrows(TriedToKillCurrentProcessException.class, () -> {
@@ -152,7 +152,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
+        Mockito.when(processInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
         Mockito.when(processKiller.kill(process.pid(), force)).thenReturn(true);
 
         // act
@@ -169,7 +169,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(rootProcessJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
+        Mockito.when(processInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
 
         // act + assert
         assertThrows(NoPermissionToKillProcessException.class, () -> {
@@ -184,7 +184,7 @@ public class ProcessServiceMockitoTests {
         // arrange
         String content = new String(processJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
-        Mockito.when(systemInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
+        Mockito.when(processInfoProvider.getProcessById(process.pid())).thenReturn(Optional.of(process));
         Mockito.when(processKiller.kill(process.pid(), force)).thenReturn(false);
 
         // act

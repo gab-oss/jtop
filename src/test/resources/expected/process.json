@@ -1,5 +1,8 @@
 {
   "pid": -1,
   "command": "process1",
-  "owner": "user"
+  "owner": "user",
+  "state": "R",
+  "residentSetSize": 5,
+  "cumulativeCpu": 0.5
 }

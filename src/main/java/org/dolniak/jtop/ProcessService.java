@@ -14,14 +14,14 @@ import java.util.Optional;
 public class ProcessService {
 
     private final ActionLogService actionLogService;
-    private final SystemInfoProvider systemInfoProvider;
+    private final ProcessInfoProvider systemInfoProvider;
     private final ProcessKiller processKiller;
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessService.class);
 
-    public ProcessService(ActionLogService actionLogService, SystemInfoProvider systemInfoProvider,
+    public ProcessService(ActionLogService actionLogService, ProcessInfoProvider processInfoProvider,
                           ProcessKiller processKiller) {
         this.actionLogService = actionLogService;
-        this.systemInfoProvider = systemInfoProvider;
+        this.systemInfoProvider = processInfoProvider;
         this.processKiller = processKiller;
     }
 

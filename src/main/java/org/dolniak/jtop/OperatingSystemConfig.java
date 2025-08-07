@@ -12,5 +12,4 @@ public class OperatingSystemConfig {
     public OperatingSystem operatingSystem() {
         return new LinuxOperatingSystem();
     }
-
 }
