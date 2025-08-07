@@ -4,10 +4,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 @Component
-public class ProcessHandleKiller implements ProcessKiller {
+public class BasicProcessKiller implements ProcessKiller {
 
     @Override
     public boolean kill(int pid, boolean force) {
