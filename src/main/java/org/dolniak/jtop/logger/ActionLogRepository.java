@@ -1,4 +1,4 @@
-package org.dolniak.jtop;
+package org.dolniak.jtop.logger;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

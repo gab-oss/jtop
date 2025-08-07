@@ -1,5 +1,6 @@
-package org.dolniak.jtop;
+package org.dolniak.jtop.system;
 
+import org.dolniak.jtop.Process;
 import org.springframework.stereotype.Component;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
@@ -17,13 +18,13 @@ public class BasicProcessInfoProvider implements ProcessInfoProvider {
     }
 
     @Override
-    public List<Process> getProcesses() {
+    public List<org.dolniak.jtop.Process> getProcesses() {
         List<OSProcess> osProcesses = os.getProcesses();
         return osProcesses.stream().map(this::convertOsProcess).toList();
     }
 
     @Override
-    public Optional<Process> getProcessById(int pid) {
+    public Optional<org.dolniak.jtop.Process> getProcessById(int pid) {
         return Optional.ofNullable(convertOsProcess(os.getProcess(pid)));
     }
 
@@ -32,7 +33,7 @@ public class BasicProcessInfoProvider implements ProcessInfoProvider {
         return Math.toIntExact(ProcessHandle.current().pid());
     }
 
-    private Process convertOsProcess(OSProcess osProcess) {
+    private org.dolniak.jtop.Process convertOsProcess(OSProcess osProcess) {
         if (osProcess == null) return null;
         return new Process(osProcess.getProcessID(), osProcess.getName(), osProcess.getUser(),
                 osProcess.getState().name(), osProcess.getResidentSetSize(), osProcess.getProcessCpuLoadCumulative());

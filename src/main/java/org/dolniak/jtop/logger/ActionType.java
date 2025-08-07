@@ -1,4 +1,4 @@
-package org.dolniak.jtop;
+package org.dolniak.jtop.logger;
 
 public enum ActionType {
     SIGTERM,

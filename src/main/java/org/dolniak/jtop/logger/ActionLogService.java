@@ -1,5 +1,6 @@
-package org.dolniak.jtop;
+package org.dolniak.jtop.logger;
 
+import org.dolniak.jtop.Process;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,11 +12,11 @@ public class ActionLogService {
         this.actionLogRepository = actionLogRepository;
     }
 
-    public void logFailedTerminationAttempt(Process process, ActionType actionType) {
+    public void logFailedTerminationAttempt(org.dolniak.jtop.Process process, ActionType actionType) {
         logWithAllParams(process, actionType, ActionComment.FAILED);
     }
 
-    public void logNotPermittedTerminationAttempt(Process process, ActionType actionType) {
+    public void logNotPermittedTerminationAttempt(org.dolniak.jtop.Process process, ActionType actionType) {
         logWithAllParams(process, actionType, ActionComment.NO_PERMISSION);
     }
 
@@ -28,11 +29,11 @@ public class ActionLogService {
         actionLogRepository.save(actionLogEntity);
     }
 
-    public void logCurrentProcessTerminationAttempt(Process process, ActionType actionType) {
+    public void logCurrentProcessTerminationAttempt(org.dolniak.jtop.Process process, ActionType actionType) {
         logWithAllParams(process, actionType, ActionComment.CURRENT_PROCESS);
     }
 
-    public void logSuccessfulTermination(Process process, ActionType actionType) {
+    public void logSuccessfulTermination(org.dolniak.jtop.Process process, ActionType actionType) {
         logWithAllParams(process, actionType, ActionComment.SUCCESS);
     }
 

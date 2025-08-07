@@ -1,4 +1,4 @@
-package org.dolniak.jtop;
+package org.dolniak.jtop.system;
 
 import org.springframework.stereotype.Component;
 

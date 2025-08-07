@@ -1,11 +1,13 @@
-package org.dolniak.jtop;
+package org.dolniak.jtop.system;
+
+import org.dolniak.jtop.Process;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ProcessInfoProvider {
 
-    List<Process> getProcesses();
+    List<org.dolniak.jtop.Process> getProcesses();
 
     Optional<Process> getProcessById(int pid);
 

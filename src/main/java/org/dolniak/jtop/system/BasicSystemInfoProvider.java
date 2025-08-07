@@ -1,10 +1,11 @@
-package org.dolniak.jtop;
+package org.dolniak.jtop.system;
 
 import org.dolniak.jtop.exceptions.SystemInfoLoadingException;
 import oshi.SystemInfo;
 
-public class SystemInfoProvider {
+public class BasicSystemInfoProvider implements SystemInfoProvider {
 
+    @Override
     public long getTotalMemory() {
         try {
             return new SystemInfo().getHardware().getMemory().getTotal();
@@ -13,5 +14,5 @@ public class SystemInfoProvider {
         }
     }
 
-    public SystemInfoProvider() {}
+    public BasicSystemInfoProvider() {}
 }

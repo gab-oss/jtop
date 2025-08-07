@@ -3,6 +3,8 @@ package org.dolniak.jtop;
 import org.dolniak.jtop.exceptions.NoPermissionToKillProcessException;
 import org.dolniak.jtop.exceptions.ProcessNotFoundException;
 import org.dolniak.jtop.exceptions.TriedToKillCurrentProcessException;
+import org.dolniak.jtop.system.ProcessInfoProvider;
+import org.dolniak.jtop.system.ProcessKiller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
