@@ -1,4 +1,8 @@
 # **JTOP - slim "top" REST API - get information on processes and kill them**
+A lightweight REST API that provides information about running processes on your system and allows you to kill them.  
+Designed as a minimal admin tool (or a basis for one), for running locally.
+
+Implemented in Java (version 24) with Spring Boot and [OSHI](https://www.oshi.ooo/summary.html) for system metrics.
 
 ## Getting Started
 
