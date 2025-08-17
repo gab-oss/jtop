@@ -11,17 +11,16 @@
 ### 2. Build the project
 ```bash
 git clone https://github.com/gab-oss/jtop.git
-cd jtop
-mvn clean install
 ```
 Find the file _src/main/resources/user.properties.example_, set a username and password and rename it to "user.properties".
 
-### 3. Run
-Run with Maven:
 ```bash
-mvn spring-boot:run
+cd jtop
+mvn clean install
 ```
-or run the packaged jar (look for its name in the _target_ directory):
+
+### 3. Run
+Run the packaged jar (look for its name in the _target_ directory):
 ```bash
 java -jar target/<current-build>.jar
 ```
