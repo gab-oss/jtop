@@ -35,7 +35,7 @@ public class ProcessService {
 
     public boolean terminate(int pid, boolean force) {
         ActionType actionType = force ? ActionType.SIGKILL : ActionType.SIGTERM;
-        Optional<Process> optProcess = systemInfoProvider.getProcessById(pid);
+        Optional<Process> optProcess = systemInfoProvider.getProcessById(pid); 
 
         if (optProcess.isEmpty()) {
             LOGGER.warn("Failed to kill: pid {}; process was null", pid);

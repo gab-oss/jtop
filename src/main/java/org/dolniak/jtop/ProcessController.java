@@ -25,7 +25,6 @@ public class ProcessController {
     @ExceptionHandler
     public void handleUnkillableProcess(FailedToKillProcessException ex) {}
 
-    // todo add messages
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler({
             NoPermissionToKillProcessException.class,
