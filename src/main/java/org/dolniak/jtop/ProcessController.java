@@ -32,7 +32,6 @@ public class ProcessController {
     })
     public void handleLackOfPermissions(RuntimeException ex) {}
 
-    // todo move, reuse in tests
     private static final String GET_ALL = "/processes";
     private static final String GET_BY_ID = "/processes/{id}";
     private static final String POST_KILL = "/processes/{id}/terminate";

@@ -69,7 +69,6 @@ public class ProcessControllerMockitoTests {
 
     @Test
     public void getProcessById_ifExists_shouldReturnOk() throws Exception {
-        // todo extract setup
         String content = new String(expectedProcessJson.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Process process = json.parseObject(content);
         Mockito.when(processService.getProcessById(process.pid())).thenReturn(Optional.of(process));
