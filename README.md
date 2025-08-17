@@ -54,13 +54,11 @@ Example:
 ```
 #### API Endpoints
 
-| Method | Endpoint                                 | Description                                                           | Response body (200 OK) | Expected errors                                                                                                                                                         | Example call                                                     |
-|--------|------------------------------------------|-----------------------------------------------------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
-| GET    | `/processes`                             | List all running processes                                            | JSON array of process objects |                                                                                                                                                                         | curl --user user:password http://localhost:8080/processes        
-| 
-| GET    | `/processes/{pid}`                       | Get details of a process with the provided PID                        | JSON object                | 404 - Not Found - no running process with this PID                                                                                                                      | curl --user user:password http://localhost:8080/processes/165895 
-| 
-| POST   | `/processes/{id}/terminate[?force=true]` | Kill a process by PID - SIGKILL with _?force=true_, otherwise SIGTERM | Empty                | 404 - Not Found - no running process with this PID <br> <br> 403 - Forbidden - no permission to kill this process <br> <br> 409 - Conflict - process couldn't be killed | curl --user user:password http://localhost:8080/processes/165895/terminate                                       |
+| Method | Endpoint | Description | Response body (200 OK) | Expected errors | Example call |
+|--|--|--|--|--|--|
+| GET    | `/processes`| List all running processes | JSON array of process objects || curl --user user:password http://localhost:8080/processes | 
+| GET    | `/processes/{pid}`| Get details of a process with the provided PID | JSON object | 404 - Not Found - no running process with this PID | curl --user user:password http://localhost:8080/processes/165895 | 
+| POST   | `/processes/{id}/terminate[?force=true]` | Kill a process by PID - SIGKILL with _?force=true_, otherwise SIGTERM | Empty | 404 - Not Found - no running process with this PID <br> <br> 403 - Forbidden - no permission to kill this process <br> <br> 409 - Conflict - process couldn't be killed | curl --user user:password http://localhost:8080/processes/165895/terminate |
 
 ### Logs
 To make troubleshooting and finding mistakes easier, each attempt to kill a process is logged in a H2 database, in ACTION_LOG table.
