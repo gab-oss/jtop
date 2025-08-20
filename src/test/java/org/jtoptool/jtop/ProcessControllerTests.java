@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProcessController.class)
 @AutoConfigureJsonTesters
 @Import(NoSecurityConfig.class)
-public class ProcessControllerMockitoTests {
+public class ProcessControllerTests {
 
     private static final String GET_ALL = "/processes";
     private static final String GET_BY_ID = "/processes/{id}";

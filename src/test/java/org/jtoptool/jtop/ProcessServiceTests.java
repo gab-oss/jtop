@@ -36,7 +36,7 @@ import static org.mockito.Mockito.never;
 @SpringBootTest
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
-public class ProcessServiceMockitoTests {
+public class ProcessServiceTests {
 
     @MockitoBean
     ProcessInfoProvider processInfoProvider;
